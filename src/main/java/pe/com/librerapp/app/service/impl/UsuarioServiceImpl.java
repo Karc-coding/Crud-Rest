@@ -7,11 +7,10 @@ import org.springframework.stereotype.Service;
 
 import pe.com.librerapp.app.domain.Usuario;
 import pe.com.librerapp.app.repository.IRepositoryUser;
-import pe.com.librerapp.app.service.IMethodFlagService;
 import pe.com.librerapp.app.service.IUsuarioService;
 
 @Service
-public class UsuarioServiceImpl implements IUsuarioService, IMethodFlagService {
+public class UsuarioServiceImpl implements IUsuarioService {
 
 	@Autowired
 	public IRepositoryUser repo;

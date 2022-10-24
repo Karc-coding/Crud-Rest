@@ -18,12 +18,8 @@ import org.springframework.web.bind.annotation.RestController;
 
 import lombok.extern.log4j.Log4j2;
 import pe.com.librerapp.app.domain.Usuario;
-import pe.com.librerapp.app.flag.FeatureFlagService;
 import pe.com.librerapp.app.repository.IRepositoryUser;
-import pe.com.librerapp.app.service.IMethodFlagService;
 import pe.com.librerapp.app.service.IUsuarioService;
-import pe.com.librerapp.app.service.impl.NewUsuarioServiceImpl;
-import pe.com.librerapp.app.service.impl.UsuarioServiceImpl;
 
 @RestController
 @RequestMapping("/user")
@@ -32,9 +28,6 @@ public class UsuarioController {
 
 	@Autowired
 	public IUsuarioService userService;
-
-	@Autowired
-	public IMethodFlagService methodFlagService;
 	
 	@Autowired
 	public IRepositoryUser repo;
@@ -51,12 +44,12 @@ public class UsuarioController {
 	@GetMapping("/list")
 	public ResponseEntity<Object> voidListUser(){
 
-		List<Usuario> lisUser = methodFlagService.listUser();
+		List<Usuario> lisUser = userService.listUser();
 		
 		if (lisUser.size() == 0) {
 			return ResponseEntity.notFound().build();
 		} else {
-			methodFlagService.listUser();
+			userService.listUser();
 			log.info("Se ha listado todos los usuarios");
 			return ResponseEntity.ok(lisUser);
 		}
