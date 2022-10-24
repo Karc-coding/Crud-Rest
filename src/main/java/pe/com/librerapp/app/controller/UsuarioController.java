@@ -18,8 +18,12 @@ import org.springframework.web.bind.annotation.RestController;
 
 import lombok.extern.log4j.Log4j2;
 import pe.com.librerapp.app.domain.Usuario;
+import pe.com.librerapp.app.flag.FeatureFlagService;
 import pe.com.librerapp.app.repository.IRepositoryUser;
+import pe.com.librerapp.app.service.IMethodFlagService;
 import pe.com.librerapp.app.service.IUsuarioService;
+import pe.com.librerapp.app.service.impl.NewUsuarioServiceImpl;
+import pe.com.librerapp.app.service.impl.UsuarioServiceImpl;
 
 @RestController
 @RequestMapping("/user")
@@ -28,17 +32,15 @@ public class UsuarioController {
 
 	@Autowired
 	public IUsuarioService userService;
+
+	@Autowired
+	public IMethodFlagService methodFlagService;
 	
 	@Autowired
 	public IRepositoryUser repo;
-	
-	
-	/*@PostMapping("/save")
-	public Usuario voidSaveUser(@RequestBody Usuario user) {
-		log.info("Se ha creado un nuevo usuario");
-		return userService.saveUser(user);
-	}*/
-	
+
+
+
 	@PostMapping("/save")
 	public ResponseEntity<Usuario> voidSaveUser(@RequestBody Usuario user) {
 		userService.saveUser(user);
@@ -46,37 +48,20 @@ public class UsuarioController {
 		return new ResponseEntity<Usuario>(HttpStatus.CREATED);
 	}
 	
-	
-	
-	/*@GetMapping("/list")
-	public List<Usuario> voidListUser(){
-		log.info("Se ha listado todos los usuarios");
-		return userService.listUser();
-	}*/
-	
 	@GetMapping("/list")
 	public ResponseEntity<Object> voidListUser(){
-		
-		List<Usuario> lisUser = userService.listUser();
+
+		List<Usuario> lisUser = methodFlagService.listUser();
 		
 		if (lisUser.size() == 0) {
-			//return ResponseEntity.badRequest().build();
 			return ResponseEntity.notFound().build();
 		} else {
-			userService.listUser();
+			methodFlagService.listUser();
 			log.info("Se ha listado todos los usuarios");
-			return ResponseEntity.ok().build();
+			return ResponseEntity.ok(lisUser);
 		}
 		
 	}
-	
-	
-	
-	/*@PutMapping("/update")
-	public Usuario voidUpdateUser(@RequestBody Usuario user){
-		log.info("Se ha actualizado el usuario con el ID " + user.getId());
-		return userService.updateUser(user);
-	}*/
 	
 	@PutMapping("/update")
 	public ResponseEntity<Object> voidUpdateUser(@RequestBody Usuario user){
@@ -84,7 +69,6 @@ public class UsuarioController {
 		Optional<Usuario> u = repo.findById(user.getId());
 		
 		if (!u.isPresent()) {
-			//return ResponseEntity.badRequest().build();
 			return ResponseEntity.notFound().build();
 		} else {
 			userService.updateUser(user);
@@ -93,26 +77,17 @@ public class UsuarioController {
 		}
 	}
 	
-	
-	
-	/*@DeleteMapping("/delete/{id}")
-	public void voidDeleteUser(@PathVariable Long id){
-		userService.deleteUser(id);
-		log.info("Se ha eliminado el usuario con el ID " + id);
-	}*/
-	
 	@DeleteMapping("/delete/{id}")
 	public ResponseEntity<Object> voidDeleteUser(@PathVariable Long id){
 		
 		Optional<Usuario> u = repo.findById(id);
 		
 		if (!u.isPresent()) {
-			//return ResponseEntity.badRequest().build();
 			return ResponseEntity.notFound().build();
 		} else {
 			userService.deleteUser(id);
 			log.info("Se ha eliminado el usuario con el ID " + id);
-			return ResponseEntity.ok().build();
+			return ResponseEntity.ok(u);
 		}
 	}
 }
