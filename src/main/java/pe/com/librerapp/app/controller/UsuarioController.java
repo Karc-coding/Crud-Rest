@@ -5,6 +5,7 @@ import java.util.List;
 import java.util.Optional;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.DeleteMapping;
@@ -19,6 +20,7 @@ import org.springframework.web.bind.annotation.RestController;
 import lombok.extern.log4j.Log4j2;
 import pe.com.librerapp.app.domain.Usuario;
 import pe.com.librerapp.app.repository.IRepositoryUser;
+import pe.com.librerapp.app.service.IMethodFlagService;
 import pe.com.librerapp.app.service.IUsuarioService;
 
 @RestController
@@ -28,7 +30,11 @@ public class UsuarioController {
 
 	@Autowired
 	public IUsuarioService userService;
-	
+
+	@Autowired
+//	@Qualifier("userDefaultService")
+	public IMethodFlagService iMethodFlagService;
+
 	@Autowired
 	public IRepositoryUser repo;
 
@@ -40,16 +46,16 @@ public class UsuarioController {
 		log.info("Se ha creado un nuevo usuario");
 		return new ResponseEntity<Usuario>(HttpStatus.CREATED);
 	}
-	
+
 	@GetMapping("/list")
 	public ResponseEntity<Object> voidListUser(){
 
-		List<Usuario> lisUser = userService.listUser();
+		List<Usuario> lisUser = iMethodFlagService.listUser();
 		
 		if (lisUser.size() == 0) {
 			return ResponseEntity.notFound().build();
 		} else {
-			userService.listUser();
+			iMethodFlagService.listUser();
 			log.info("Se ha listado todos los usuarios");
 			return ResponseEntity.ok(lisUser);
 		}
